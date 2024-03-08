@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuessWars</title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupInitialModalBehavior();
+            fetchAndInitializeGame();
+        
+            function fetchAndInitializeGame() {
+                fetch('STARWARSCHARACTERS.txt')
+                    .then(response => response.text())
+                    .then(text => {
+                        const characters = parseCharacterData(text);
+                        initializeGame(characters);
+                    })
+                    .catch(error => console.error('Error fetching characters:', error));
+            }
+        
+            function setupInitialModalBehavior() {
+                const initialModal = document.getElementById("myModal");
+                initialModal.style.display = "block";
+                document.getElementById('resultModal').style.display = 'none';
+        
+                document.querySelector('.close').addEventListener('click', () => {
+                    initialModal.style.display = "none";
+                });
+        
+                window.addEventListener('click', (event) => {
+                    if (event.target === initialModal) {
+                        initialModal.style.display = "none";
+                    }
+                });
+            }
+        
+            function parseCharacterData(text) {
+                return text.split('\n').reduce((acc, line) => {
+                    if (line.trim()) {
+                        const data = line.split(',').reduce((charAcc, curr) => {
+                            const [key, value] = curr.split(':').map(item => item.trim());
+                            charAcc[key] = key === 'Appeared in' ? value.split('/').map(v => v.trim()) : value;
+                            return charAcc;
+                        }, {});
+                        acc.push(data);
+                    }
+                    return acc;
+                }, []);
+            }
+        
+            function initializeGame(characters) {
+                const giveUpButton = document.querySelector('button[name="giveUpButton"]');
+                const guessButton = document.querySelector('button[name="guessButton"]');
+                const namesButton = document.querySelector('button[name="namesButton"]');
+                const guessBox = document.getElementById('guessBox');
+                const cluesLabel = document.getElementById('dynamicLabel');
+                let currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+        
+                cluesLabel.textContent = "They are a part of the Star Wars universe.";
+        
+                setupGuessHandling(guessButton, guessBox, characters, currentCharacter);
+                setupGiveUpHandling(giveUpButton, currentCharacter);
+                setupNamesHandling(namesButton, characters);
+            }
+        
+            function setupGuessHandling(guessButton, guessBox, characters, currentCharacter) {
+                guessButton.addEventListener('click', () => {
+                    const userGuess = guessBox.value.trim().toLowerCase();
+                    const guessedCharacter = characters.find(char => char.Name.toLowerCase() === userGuess);
+        
+                    if (guessedCharacter) {
+                        markGuessedCharacter(guessedCharacter);
+                        const isCorrectGuess = guessedCharacter.Name === currentCharacter.Name;
+                        showResultModal(isCorrectGuess ? `Correct! It was ${currentCharacter.Name}.` : 'Incorrect, try again!');
+                    } else {
+                        alert('Character not found, try again!');
+                    }
+        
+                    guessBox.value = ''; // Clear the guessBox after each guess
+                });
+            }
+        
+            function markGuessedCharacter(guessedCharacter) {
+                const sanitized = guessedCharacter.Name.replace(/\s+/g, '-').toLowerCase();
+                const nameElement = document.getElementById(`name-${sanitized}`);
+                if (nameElement) nameElement.classList.add('guessed');
+            }
+        
+            function setupGiveUpHandling(giveUpButton, currentCharacter) {
+                giveUpButton.addEventListener('click', () => {
+                    showResultModal(`You gave up. The correct answer was ${currentCharacter.Name}.`);
+                });
+            }
+        
+            function setupNamesHandling(namesButton, characters) {
+                namesButton.addEventListener('click', () => {
+                    const namesListElement = document.getElementById('namesList');
+                    namesListElement.innerHTML = characters.map(character => {
+                        const sanitized = character.Name.replace(/\s+/g, '-').toLowerCase();
+                        return `<p id="name-${sanitized}">${character.Name}</p>`;
+                    }).join('');
+                    document.getElementById('namesModal').style.display = 'block';
+                });
+        
+                document.querySelector('.closeNames').addEventListener('click', () => {
+                    document.getElementById('namesModal').style.display = 'none';
+                });
+        
+                window.addEventListener('click', (event) => {
+                    if (event.target == document.getElementById('namesModal')) {
+                        document.getElementById('namesModal').style.display = 'none';
+                    }
+                });
+            }
+        
+            function showResultModal(message) {
+                const resultModal = document.getElementById('resultModal');
+                document.getElementById('resultMessage').textContent = message;
+                resultModal.style.display = 'block';
+        
+                // Setup behavior for closing the result modal
+                document.querySelector('.closeResult').addEventListener('click', () => resultModal.style.display = "none");
+                window.addEventListener('click', (event) => {
+                    if (event.target === resultModal) resultModal.style.display = "none";
+                });
+            }
+        });
+    </script>
+        
+        
+        
+        
+
+    <style>
+        .guessed {
+            text-decoration: line-through;
+        }
+        body{
+            background-image: url(Background1.webp);
+            background-repeat: repeat;
+            background-size: 500px 500px;
+            color: white;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+        img {
+                overflow-clip-margin: content-box;
+                overflow: clip;
+            }
+        .main{
+            margin: auto;
+                max-width: 90vw;
+                width: 640px;
+                background-color: black;
+                border: 3px solid rgb(255, 221, 0);
+                border-radius: 8px;
+        }
+        title {
+                font-size: 44px;
+                line-height: 1.045em;
+                font-weight: bolder;
+                margin: 12px 3px;
+            }
+        
+        .label-container, textarea, button {
+                display: block; /* Makes sure these elements are block-level */
+                margin: 20px auto; /* Centers them within their parent */
+                max-width: 200px; /* Adjust this as needed */
+            }
+
+        .label-container {
+                border: 1px solid #ccc;
+                padding: 10px;
+                word-wrap: break-word;
+                background-color: black;
+                border: 3px solid rgb(255, 221, 0);
+                border-radius: 8px;
+            }
+
+        textarea, button {
+                width: auto; /* Adjust this as needed, or use specific widths */
+                text-align: center; /* For the text inside the elements */
+            }
+
+        /* The Modal (background) */
+        .modal {
+
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+        background-color: black;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 3px  solid rgb(255, 221, 0);
+        border-radius: 8px;
+        width: 40%; /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        }
+        .logo {
+                height: 180px;
+            }
+
+        .button-style {
+            background-color: rgb(255, 221, 0); /* Yellow background to match the borders */
+            color: black; /* Text color */
+            border: 2px solid rgb(255, 221, 0); /* Consistent with the theme's border color */
+            border-radius: 5px; /* Slightly rounded corners for a modern look */
+            padding: 10px 20px; /* Vertical and horizontal padding */
+            font-family: 'Roboto', sans-serif; /* Consistency in typography */
+            font-size: 16px; /* Adequate text size for readability */
+            font-weight: bold; /* Bold text for better visibility */
+            cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+            margin: 10px 5px;
+        }
+
+        .button-style:hover {
+            background-color: black; /* Color change on hover for interaction feedback */
+            color: rgb(255, 221, 0); /* Text color changes to match the theme's accent color */
+            border-color: white; /* Border color changes to white for a visible effect */
+        }
+
+        .button-container {
+            display: flex; /* Activates Flexbox layout */
+            justify-content: center; /* Centers the buttons horizontally */
+            gap: 10px; /* Reduces the space between the buttons */
+            margin: 0; /* Centers the container and adds margin for spacing */
+            padding: 0 10px;
+        }
+
+        textarea {
+            background-color: #000; /* Black background to match the theme */
+            color: #fff; /* White text color for contrast */
+            border: 2px solid rgb(255, 221, 0); /* Yellow border to align with the theme */
+            border-radius: 8px; /* Rounded corners for a modern look */
+            padding: 10px; /* Padding for text inside the textarea */
+            width: calc(100% - 24px); /* Full width inside the container, accounting for padding and border */
+            box-sizing: border-box; /* Ensures padding and border are included in the total width/height */
+            font-family: 'Roboto', sans-serif; /* Consistency in typography */
+            margin: 10px auto; /* Margin for spacing around the textarea */
+            resize: vertical; /* Allows resizing only vertically */
+        }
+        .closeResult {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            outline: none;
+        }
+
+        .closeResult:hover, .closeResult:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modalh {
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modalh-content {
+            background-color: black;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 3px  solid rgb(255, 221, 0);
+            border-radius: 8px;
+            width: 40%; /* Could be more or less, depending on screen size */
+        }
+        .closeNames {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .closeNames:hover,
+        .closeNames:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .incorrect-guess-animation {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Correct Answer / Give Up Modal -->
+    <div id="resultModal" class="modalh">
+        <div class="modal-content">
+        <span class="closeResult">&times;</span>
+        <h2 id="resultTitle">Game Over</h2>
+        <p id="resultMessage">You gave up. The correct answer was XYZ.</p>
+        <div class="button-container">
+            <button id="playAgainButton" class="button-style">Play Again</button>
+        </div>
+        
+        </div>
+    </div>
+    <div id="namesModal" class="modalh" style="display:none;">
+        <div class="modalh-content">
+            <span class="closeNames">&times;</span>
+            <h2>Possible Characters</h2>
+            <div id="namesList" style="max-height: 300px; overflow-y: auto;">
+                <!-- Character names will be inserted here -->
+            </div>
+        </div>
+    </div>
+  
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Welcome to GuessWars!</h2>
+            <p>Guess the Star Wars character from the clues.</p>
+            <p>Stuck? Click "Names" for a hint or "Give Up" to see the answer.</p>
+            <p>Ready? May the Force be with you!</p>
+            
+        </div>
+      </div>
+    <div class="main">
+        <div>
+            <div>
+                <img src="logo.png" alt="gameLogo" class = "logo">
+            </div>
+            <div>
+                <textarea name="guessBox" id="guessBox" cols="30" rows="1" maxlength="50"></textarea>
+            </div>
+                <div class="button-container">
+                    <button name="giveUpButton" class="button-style">Give Up</button>
+                    <button name="guessButton" class="button-style">Guess</button>
+                    <button name="namesButton" class="button-style">Names</button>
+                </div>
+            
+            <div class="label-container">
+                <label for="dynamicLabel">Clues:</label>
+                <span id="dynamicLabel"> 
+            </div>
+        </div>
+    </div>
+</body>
+</html>
