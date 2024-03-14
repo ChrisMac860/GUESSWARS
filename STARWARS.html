@@ -7,6 +7,8 @@
     <title>GuessWars</title>
 
     <script>
+        let characters = [];
+        let currentCharacter= "";
         document.addEventListener('DOMContentLoaded', function() {
             setupInitialModalBehavior();
             fetchAndInitializeGame();
@@ -15,7 +17,7 @@
                 fetch('STARWARSCHARACTERS.txt')
                     .then(response => response.text())
                     .then(text => {
-                        const characters = parseCharacterData(text);
+                        characters = parseCharacterData(text);
                         initializeGame(characters);
                     })
                     .catch(error => console.error('Error fetching characters:', error));
@@ -57,29 +59,37 @@
                 const namesButton = document.querySelector('button[name="namesButton"]');
                 const guessBox = document.getElementById('guessBox');
                 const cluesLabel = document.getElementById('dynamicLabel');
-                let currentCharacter = characters[Math.floor(Math.random() * characters.length)];
+                currentCharacter = characters[Math.floor(Math.random() * characters.length)];
         
-                cluesLabel.textContent = "They are a part of the Star Wars universe.";
+                cluesLabel.textContent = " ";
         
                 setupGuessHandling(guessButton, guessBox, characters, currentCharacter);
                 setupGiveUpHandling(giveUpButton, currentCharacter);
                 setupNamesHandling(namesButton, characters);
+                setupPlayAgainButton();
             }
         
             function setupGuessHandling(guessButton, guessBox, characters, currentCharacter) {
                 guessButton.addEventListener('click', () => {
                     const userGuess = guessBox.value.trim().toLowerCase();
                     const guessedCharacter = characters.find(char => char.Name.toLowerCase() === userGuess);
-        
+                    
                     if (guessedCharacter) {
+
+
                         markGuessedCharacter(guessedCharacter);
                         const isCorrectGuess = guessedCharacter.Name === currentCharacter.Name;
-                        showResultModal(isCorrectGuess ? `Correct! It was ${currentCharacter.Name}.` : 'Incorrect, try again!');
+                        updateCluesBasedOnGuess(guessedCharacter, currentCharacter)
+                        if(isCorrectGuess){
+                            showResultModal("Correct! It was ${currentCharacter.Name}");
+                        }
+                        animateIncorrectGuess();
+                        
                     } else {
                         alert('Character not found, try again!');
                     }
-        
-                    guessBox.value = ''; // Clear the guessBox after each guess
+                    
+                     // Clear the guessBox after each guess
                 });
             }
         
@@ -92,6 +102,25 @@
             function setupGiveUpHandling(giveUpButton, currentCharacter) {
                 giveUpButton.addEventListener('click', () => {
                     showResultModal(`You gave up. The correct answer was ${currentCharacter.Name}.`);
+                });
+            }
+            function setupPlayAgainButton() {
+                const playAgainButton = document.getElementById('playAgainButton');
+                const resultModal = document.getElementById('resultModal');
+                const cluesLabel = document.getElementById('dynamicLabel');
+                const guessBox = document.getElementById('guessBox');
+
+                playAgainButton.addEventListener('click', function() {
+                
+                    resultModal.style.display = 'none'; // Hide the result modal
+                    // Pick a new character from the characters array
+                    alert(currentCharacter.Name)
+                    // Reset the clues display
+                    cluesLabel.textContent = " ";
+                    // Clear the guess input box for the next round
+                    guessBox.value = '';
+                    initializeGame(characters)
+                    alert(currentCharacter.Name)
                 });
             }
         
@@ -127,6 +156,73 @@
                     if (event.target === resultModal) resultModal.style.display = "none";
                 });
             }
+
+            function animateIncorrectGuess() {
+                const guessBox = document.getElementById('guessBox');
+                guessBox.classList.add('incorrect-guess-animation');
+                guessBox.value = '';
+                setTimeout(() => {
+                    guessBox.classList.remove('incorrect-guess-animation');
+                }, 1000); // Reset animation after 1 second
+            }
+
+            function updateCluesBasedOnGuess(guessedCharacter, currentCharacter) {
+                const cluesLabel = document.getElementById('dynamicLabel');
+                let newClues = [];
+                // Example: Check for common properties to add as clues
+                if (guessedCharacter.Affiliation && guessedCharacter.Affiliation === currentCharacter.Affiliation) {
+                    newClues.push(`Affiliation: ${currentCharacter.Affiliation}`);
+                }
+                if (guessedCharacter.Weapon && guessedCharacter.Weapon === currentCharacter.Weapon) {
+                    newClues.push(`Weapon: ${currentCharacter.Weapon}`);
+                }
+                if (guessedCharacter['Force sensitive'] && guessedCharacter['Force sensitive'] === currentCharacter['Force sensitive']) {
+                    newClues.push(`Force sensitive: ${currentCharacter['Force sensitive']}`);
+                }
+                if (guessedCharacter.Planet && guessedCharacter.Planet === currentCharacter.Planet) {
+                    newClues.push(`Planet: ${currentCharacter.Planet}`);
+                }
+                if (guessedCharacter.Species && guessedCharacter.Species === currentCharacter.Species) {
+                    newClues.push(`Species: ${currentCharacter.Species}`);
+                }
+                if (guessedCharacter.Died && guessedCharacter.Died === currentCharacter.Died) {
+                    newClues.push(`Died: ${currentCharacter.Died}`);
+                }
+                if (guessedCharacter.Occupation && guessedCharacter.Occupation === currentCharacter.Occupation) {
+                    newClues.push(`Occupation: ${currentCharacter.Occupation}`);
+                }
+                if (guessedCharacter['Appeared in'] && currentCharacter['Appeared in']) {
+                    // Convert both strings to arrays by splitting at '/'
+                    const guessedMovies = guessedCharacter['Appeared in'];
+                    const currentMovies = currentCharacter['Appeared in'];
+
+                    if (guessedMovies && typeof guessedMovies === 'string' && currentMovies && typeof currentMovies === 'string') {
+                        const guessedAppearances = guessedMovies.split('/').map(item => item.trim());
+                        const currentAppearances = currentMovies.split('/').map(item => item.trim());
+
+                        const commonAppearances = guessedAppearances.filter(movie => currentAppearances.includes(movie));
+
+                        if (commonAppearances.length > 0) {
+                            newClues.push(`Appeared in: ${commonAppearances.join(', ')}`);
+                        }
+                    }
+                }
+
+
+                // Only update if there are new clues to add
+                if (newClues.length > 0) {
+                    // Check if it's the first clue to avoid prepending a comma
+                    if (cluesLabel.textContent.trim() === "") {
+                        cluesLabel.textContent += newClues.join(', ');
+                    } else {
+                        cluesLabel.textContent += `, ${newClues.join(', ')}`;
+                    }
+                }
+            }
+
+
+
+            
         });
     </script>
         
