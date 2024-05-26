@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuessWars</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Correct Answer / Give Up Modal -->
+    <div id="resultModal" class="modalh">
+        <div class="modal-content">
+            <span class="closeResult">&times;</span>
+            <div id="finalScore" class="score-display">0</div> <!-- Score display -->
+            <h2 id="resultTitle">Game Over</h2>
+            <p id="resultMessage">You gave up. The correct answer was XYZ.</p>
+            <div class="button-container">
+                <button id="playAgainButton" class="button-style">Play Again</button>
+            </div>
+        </div>
+    </div>
+    <div id="namesModal" class="modalh" style="display:none;">
+        <div class="modalh-content">
+            <span class="closeNames">&times;</span>
+            <h2>Possible Characters</h2>
+            <div id="namesList" style="max-height: 300px; overflow-y: auto;">
+                <!-- Character names will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Welcome to GuessWars!</h2>
+            <p>Guess the Star Wars character from the clues.</p>
+            <p>Stuck? Click "Names" for a hint or "Give Up" to see the answer.</p>
+            <p>Ready? May the Force be with you!</p>
+        </div>
+    </div>
+    <div class="main">
+        <div>
+            <img src="logo.png" alt="gameLogo" class="logo">
+        </div>
+        <div>
+            <textarea name="guessBox" id="guessBox" cols="30" rows="1" maxlength="50"></textarea>
+        </div>
+        <div class="button-container">
+            <button name="giveUpButton" class="button-style">Give Up</button>
+            <button name="guessButton" class="button-style">Guess</button>
+            <button name="namesButton" class="button-style">Names</button>
+        </div>
+        <div class="clue-container">
+            <div class="clue-box" id="affiliationClue">
+                <h3>Affiliation</h3>
+                <p id="affiliationValue">-</p>
+            </div>
+            <div class="clue-box" id="weaponClue">
+                <h3>Weapon</h3>
+                <p id="weaponValue">-</p>
+            </div>
+            <div class="clue-box" id="forceClue">
+                <h3>Force Sensitive</h3>
+                <p id="forceValue">-</p>
+            </div>
+            <div class="clue-box" id="planetClue">
+                <h3>Planet</h3>
+                <p id="planetValue">-</p>
+            </div>
+            <div class="clue-box" id="speciesClue">
+                <h3>Species</h3>
+                <p id="speciesValue">-</p>
+            </div>
+            <div class="clue-box" id="diedClue">
+                <h3>Died</h3>
+                <p id="diedValue">-</p>
+            </div>
+            <div class="clue-box" id="occupationClue">
+                <h3>Occupation</h3>
+                <p id="occupationValue">-</p>
+            </div>
+            <div class="clue-box" id="appearedInClue">
+                <h3>Appeared In</h3>
+                <p id="appearedInValue">-</p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
