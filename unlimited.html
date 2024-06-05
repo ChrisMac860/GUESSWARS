@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuessWars</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script> <!-- Add Fuse.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Add Font Awesome -->
 </head>
+
 <body>
     <!-- Correct Answer / Give Up Modal -->
     <div id="resultModal" class="modalh">
@@ -29,6 +32,20 @@
         </div>
     </div>
 
+    <div id="helpModal" class="modalh" style="display:none;">
+        <div class="modalh-content">
+            <span class="closeHelp">&times;</span>
+            <h2>Help</h2>
+            <p>Welcome to GuessWars! Here’s how to play:</p>
+            <ul>
+                <li>Guess the Star Wars character from the clues.</li>
+                <li>Use the "Give Up" button if you're stuck to see the answer.</li>
+                <li>Click "Names" for a hint of possible characters.</li>
+                <li>Use the "Restart" button to start a new game.</li>
+            </ul>
+        </div>
+    </div>
+
     <div id="myModal" class="modal">
         <!-- Modal content -->
         <div class="modal-content">
@@ -40,11 +57,16 @@
         </div>
     </div>
     <div class="main">
+        <div class="top-left-container">
+            <button id="helpButton" class="icon-button"><i class="fas fa-question-circle"></i></button> <!-- Help button -->
+            <a href="home.html" class="icon-button"><i class="fas fa-home"></i></a> <!-- Home button -->
+            <button id="restartButton" class="icon-button"><i class="fas fa-redo"></i></button> <!-- Restart button -->
+        </div>
         <div>
             <img src="logo.png" alt="gameLogo" class="logo">
         </div>
         <div>
-            <textarea name="guessBox" id="guessBox" cols="30" rows="1" maxlength="50"></textarea>
+            <input type="text" name="guessBox" id="guessBox" maxlength="50">
         </div>
         <div class="button-container">
             <button name="giveUpButton" class="button-style">Give Up</button>
@@ -86,8 +108,6 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="unlimitedScript.js"></script>
 </body>
 </html>
-
-

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily GuessWars</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Correct Answer / Give Up Modal -->
+    <div id="resultModal" class="modalh">
+        <div class="modal-content">
+            <span class="closeResult">&times;</span>
+            <div id="finalScore" class="score-display">0</div> <!-- Score display -->
+            <h2 id="resultTitle">Game Over</h2>
+            <p id="resultMessage"></p>
+        </div>
+    </div>
+    <div id="namesModal" class="modalh" style="display:none;">
+        <div class="modalh-content">
+            <span class="closeNames">&times;</span>
+            <h2>Possible Characters</h2>
+            <div id="namesList" style="max-height: 300px; overflow-y: auto;">
+                <!-- Character names will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modalh" style="display:none;">
+        <div class="modalh-content">
+            <span class="closeHelp">&times;</span>
+            <h2>Help</h2>
+            <p>Welcome to Daily GuessWars! Here’s how to play:</p>
+            <ul>
+                <li>Guess the Star Wars character from the clues.</li>
+                <li>You only get 8 guesses per day.</li>
+                <li>If you give up, you have to wait until the next day to play again.</li>
+                <li>The character will not be revealed if you give up.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Welcome to Daily GuessWars!</h2>
+            <p>Guess the Star Wars character from the clues.</p>
+            <p>You only get 8 guesses per day. Use them wisely!</p>
+            <p>Stuck? Click "Names" for a hint or "Give Up" to stop playing.</p>
+            <p>Ready? May the Force be with you!</p>
+        </div>
+    </div>
+    <div class="main">
+        <div class="top-left-container">
+            <button id="helpButton" class="icon-button"><i class="fas fa-question-circle"></i></button>
+            <a href="home.html" class="icon-button"><i class="fas fa-home"></i></a>
+        </div>
+        <div>
+            <img src="logo.png" alt="gameLogo" class="logo">
+        </div>
+        <div>
+            <input type="text" name="guessBox" id="guessBox" maxlength="50">
+        </div>
+        <div class="button-container">
+            <button name="giveUpButton" class="button-style">Give Up</button>
+            <button name="guessButton" class="button-style">Guess</button>
+            <button name="namesButton" class="button-style">Names</button>
+        </div>
+        <div class="clue-container">
+            <div class="clue-box" id="affiliationClue">
+                <h3>Affiliation</h3>
+                <p id="affiliationValue">-</p>
+            </div>
+            <div class="clue-box" id="weaponClue">
+                <h3>Weapon</h3>
+                <p id="weaponValue">-</p>
+            </div>
+            <div class="clue-box" id="forceClue">
+                <h3>Force Sensitive</h3>
+                <p id="forceValue">-</p>
+            </div>
+            <div class="clue-box" id="planetClue">
+                <h3>Planet</h3>
+                <p id="planetValue">-</p>
+            </div>
+            <div class="clue-box" id="speciesClue">
+                <h3>Species</h3>
+                <p id="speciesValue">-</p>
+            </div>
+            <div class="clue-box" id="diedClue">
+                <h3>Died</h3>
+                <p id="diedValue">-</p>
+            </div>
+            <div class="clue-box" id="occupationClue">
+                <h3>Occupation</h3>
+                <p id="occupationValue">-</p>
+            </div>
+            <div class="clue-box" id="appearedInClue">
+                <h3>Appeared In</h3>
+                <p id="appearedInValue">-</p>
+            </div>
+        </div>
+    </div>
+    <script src="dailyScript.js"></script>
+</body>
+</html>

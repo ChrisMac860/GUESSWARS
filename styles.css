@@ -9,6 +9,8 @@ body {
     color: white;
     text-align: center;
     font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 img {
@@ -23,9 +25,10 @@ img {
     background-color: black;
     border: 3px solid rgb(255, 221, 0);
     border-radius: 8px;
+    position: relative;
 }
 
-title {
+.title {
     font-size: 44px;
     line-height: 1.045em;
     font-weight: bolder;
@@ -33,7 +36,7 @@ title {
 }
 
 .label-container,
-textarea,
+input[type="text"],
 button {
     display: block;
     margin: 20px auto;
@@ -49,7 +52,7 @@ button {
     border-radius: 8px;
 }
 
-textarea,
+input[type="text"],
 button {
     width: auto;
     text-align: center;
@@ -115,6 +118,23 @@ button {
     border-color: white;
 }
 
+.small-button {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.icon-button {
+    background-color: transparent;
+    color: rgb(255, 221, 0);
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.icon-button:hover {
+    color: white;
+}
+
 .button-container {
     display: flex;
     justify-content: center;
@@ -123,7 +143,30 @@ button {
     padding: 0 10px;
 }
 
-textarea {
+.top-left-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: row; /* Ensure buttons are in a row */
+    gap: 10px; /* Space between buttons */
+}
+
+.icon-button {
+    background-color: transparent;
+    color: rgb(255, 221, 0);
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center; /* Align items vertically */
+}
+
+.icon-button:hover {
+    color: white;
+}
+
+input[type="text"] {
     background-color: #000;
     color: #fff;
     border: 2px solid rgb(255, 221, 0);
@@ -133,7 +176,6 @@ textarea {
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
     margin: 10px auto;
-    resize: vertical;
 }
 
 .closeResult {
@@ -177,7 +219,8 @@ textarea {
     width: 40%;
 }
 
-.closeNames {
+.closeNames,
+.closeHelp {
     color: #aaa;
     float: right;
     font-size: 28px;
@@ -185,7 +228,9 @@ textarea {
 }
 
 .closeNames:hover,
-.closeNames:focus {
+.closeNames:focus,
+.closeHelp:hover,
+.closeHelp:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
