@@ -1,20 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let characters = [];
+    // characters array is now globally available from characters.js
     let currentCharacter = "";
     let score = 0;
 
     setupInitialModalBehavior();
-    fetchAndInitializeGame();
-
-    function fetchAndInitializeGame() {
-        fetch('STARWARSCHARACTERS.txt')
-            .then(response => response.text())
-            .then(text => {
-                characters = parseCharacterData(text);
-                initializeGame();
-            })
-            .catch(error => console.error('Error fetching characters:', error));
-    }
+    initializeGame();  // Directly initialize the game
 
     function setupInitialModalBehavior() {
         const initialModal = document.getElementById("myModal");
@@ -32,24 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function parseCharacterData(text) {
-        return text.split('\n').reduce((acc, line) => {
-            if (line.trim()) {
-                const data = line.split(',').reduce((charAcc, curr) => {
-                    const [key, value] = curr.split(':').map(item => item.trim());
-                    charAcc[key] = key === 'Appeared in' ? value.split('/').map(v => v.trim()) : value;
-                    return charAcc;
-                }, {});
-                acc.push(data);
-            }
-            return acc;
-        }, []);
-    }
-
     function initializeGame() {
         score = 0;
         setupEventListeners();
-        selectNewCharacter();
+        selectNewCharacter();  // Start the game by selecting a new character
     }
 
     function setupEventListeners() {
@@ -73,14 +49,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleGuess() {
         const guessBox = document.getElementById('guessBox');
         const userGuess = guessBox.value.trim().toLowerCase();
-        const guessedCharacter = characters.find(char => char.Name.toLowerCase() === userGuess);
+        const guessedCharacter = characters.find(char => char.name.toLowerCase() === userGuess);
 
         if (guessedCharacter) {
             markGuessedCharacter(guessedCharacter);
-            const isCorrectGuess = guessedCharacter.Name === currentCharacter.Name;
+            const isCorrectGuess = guessedCharacter.name === currentCharacter.name;
             updateCluesBasedOnGuess(guessedCharacter, currentCharacter);
             if (isCorrectGuess) {
-                showResultModal(`Correct! It was ${currentCharacter.Name}.`);
+                showResultModal(`Correct! It was ${currentCharacter.name}.`);
             } else {
                 animateIncorrectGuess();
             }
@@ -93,13 +69,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function markGuessedCharacter(guessedCharacter) {
-        const sanitized = guessedCharacter.Name.replace(/\s+/g, '-').toLowerCase();
+        const sanitized = guessedCharacter.name.replace(/\s+/g, '-').toLowerCase();
         const nameElement = document.getElementById(`name-${sanitized}`);
         if (nameElement) nameElement.classList.add('guessed');
     }
 
     function handleGiveUp() {
-        showResultModal(`You gave up. The correct answer was ${currentCharacter.Name}.`);
+        showResultModal(`You gave up. The correct answer was ${currentCharacter.name}.`);
     }
 
     function handlePlayAgain() {
@@ -111,8 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleNames() {
         const namesListElement = document.getElementById('namesList');
         namesListElement.innerHTML = characters.map(character => {
-            const sanitized = character.Name.replace(/\s+/g, '-').toLowerCase();
-            return `<p id="name-${sanitized}">${character.Name}</p>`;
+            const sanitized = character.name.replace(/\s+/g, '-').toLowerCase();
+            return `<p id="name-${sanitized}">${character.name}</p>`;
         }).join('');
         document.getElementById('namesModal').style.display = 'block';
     }
@@ -139,29 +115,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCluesBasedOnGuess(guessedCharacter, currentCharacter) {
-        if (guessedCharacter.Affiliation && guessedCharacter.Affiliation === currentCharacter.Affiliation) {
-            document.getElementById('affiliationValue').textContent = currentCharacter.Affiliation;
+        if (guessedCharacter.affiliation && guessedCharacter.affiliation === currentCharacter.affiliation) {
+            document.getElementById('affiliationValue').textContent = currentCharacter.affiliation;
         }
-        if (guessedCharacter.Weapon && guessedCharacter.Weapon === currentCharacter.Weapon) {
-            document.getElementById('weaponValue').textContent = currentCharacter.Weapon;
+        if (guessedCharacter.weapon && guessedCharacter.weapon === currentCharacter.weapon) {
+            document.getElementById('weaponValue').textContent = currentCharacter.weapon;
         }
-        if (guessedCharacter['Force sensitive'] && guessedCharacter['Force sensitive'] === currentCharacter['Force sensitive']) {
-            document.getElementById('forceValue').textContent = currentCharacter['Force sensitive'];
+        if (guessedCharacter.forceSensitive && guessedCharacter.forceSensitive === currentCharacter.forceSensitive) {
+            document.getElementById('forceValue').textContent = currentCharacter.forceSensitive;
         }
-        if (guessedCharacter.Planet && guessedCharacter.Planet === currentCharacter.Planet) {
-            document.getElementById('planetValue').textContent = currentCharacter.Planet;
+        if (guessedCharacter.planet && guessedCharacter.planet === currentCharacter.planet) {
+            document.getElementById('planetValue').textContent = currentCharacter.planet;
         }
-        if (guessedCharacter.Species && guessedCharacter.Species === currentCharacter.Species) {
-            document.getElementById('speciesValue').textContent = currentCharacter.Species;
+        if (guessedCharacter.species && guessedCharacter.species === currentCharacter.species) {
+            document.getElementById('speciesValue').textContent = currentCharacter.species;
         }
-        if (guessedCharacter.Died && guessedCharacter.Died === currentCharacter.Died) {
-            document.getElementById('diedValue').textContent = currentCharacter.Died;
+        if (guessedCharacter.died && guessedCharacter.died === currentCharacter.died) {
+            document.getElementById('diedValue').textContent = currentCharacter.died;
         }
-        if (guessedCharacter.Occupation && guessedCharacter.Occupation === currentCharacter.Occupation) {
-            document.getElementById('occupationValue').textContent = currentCharacter.Occupation;
+        if (guessedCharacter.occupation && guessedCharacter.occupation === currentCharacter.occupation) {
+            document.getElementById('occupationValue').textContent = currentCharacter.occupation;
         }
-        if (guessedCharacter['Appeared in'] && currentCharacter['Appeared in']) {
-            const commonAppearances = guessedCharacter['Appeared in'].filter(movie => currentCharacter['Appeared in'].includes(movie));
+        if (guessedCharacter.appearedIn && currentCharacter.appearedIn) {
+            const commonAppearances = guessedCharacter.appearedIn.filter(movie => currentCharacter.appearedIn.includes(movie));
             if (commonAppearances.length > 0) {
                 document.getElementById('appearedInValue').textContent = commonAppearances.join(', ');
             }
